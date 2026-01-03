@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weather App</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: Arial;
+  background: linear-gradient(135deg, #74ebd5, #acb6e5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: white;
+  padding: 25px;
+  width: 300px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+input {
+  width: 90%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  background: #3498db;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Weather App</h2>
+  <input id="city" placeholder="Enter city name">
+  <button onclick="getWeather()">Get Weather</button>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const apiKey = "PUT_YOUR_API_KEY_HERE";
+
+function getWeather() {
+  const city = document.getElementById("city").value.trim();
+  const result = document.getElementById("result");
+
+  if (!city) {
+    result.innerHTML = "Please enter a city";
+    return;
+  }
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.cod !== 200) {
+        result.innerHTML = "City not found";
+        return;
+      }
+
+      result.innerHTML = `
+        <h3>${data.name}</h3>
+        <p>🌡 Temp: ${data.main.temp} °C</p>
+        <p>☁ Weather: ${data.weather[0].description}</p>
+        <p>💧 Humidity: ${data.main.humidity}%</p>
+      `;
+    })
+    .catch(() => {
+      result.innerHTML = "Network error";
+    });
+}
+</script>
+
+</body>
+</html>
